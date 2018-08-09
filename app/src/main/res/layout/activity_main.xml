@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/currLocText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-/-"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendEmergency" />
+
+    <Switch
+        android:id="@+id/swGeofence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="203dp"
+        android:layout_marginEnd="46dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="42dp"
+        android:text=" Geofence "
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/sendEmergency" />
+
+    <EditText
+        android:id="@+id/phoneNum"
+        android:layout_width="151dp"
+        android:layout_height="42dp"
+        android:layout_marginBottom="195dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="35dp"
+        android:ems="10"
+        android:hint="Phone Number"
+        android:inputType="textPersonName"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/swGeofence"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendEmergency" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sendEmergency"
+        android:layout_width="93dp"
+        android:layout_height="100dp"
+        android:clickable="true"
+        android:onClick="sendEmergency"
+        app:backgroundTint="?attr/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35000002"
+        app:srcCompat="@android:drawable/ic_menu_send" />
+
+</android.support.constraint.ConstraintLayout>
