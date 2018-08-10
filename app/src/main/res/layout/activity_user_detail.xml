@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserDetail">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="18dp">
+
+        <TextView
+            android:id="@+id/labelID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Masukkan Identitas Anda"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/nameID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Nama"
+            android:inputType="textPersonName" />
+
+
+        <EditText
+            android:id="@+id/NIMID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="NIM"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/TelpID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="No. Telpon"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/TelpDarID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="No. Telpon Darurat"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/AlamatID"
+            android:layout_width="match_parent"
+            android:layout_height="81dp"
+            android:ems="10"
+            android:hint="Alamat"
+            android:inputType="textPostalAddress" />
+
+        <EditText
+            android:id="@+id/AlamatDarID"
+            android:layout_width="match_parent"
+            android:layout_height="81dp"
+            android:ems="10"
+            android:hint="Alamat Darurat"
+            android:inputType="textPostalAddress" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onButtonClick"
+            android:text="Simpan" />
+
+        <TextView
+            android:id="@+id/lanjutID"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:text="Identitas lanjut" />
+
+    </LinearLayout>
+
+</RelativeLayout>
