@@ -72,18 +72,18 @@
             android:hint="Alamat Darurat"
             android:inputType="textPostalAddress" />
 
+        <Switch
+            android:id="@+id/enableSw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable Location Based Notification" />
+
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onButtonClick"
             android:text="Simpan" />
-
-        <TextView
-            android:id="@+id/lanjutID"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:text="Identitas lanjut" />
 
     </LinearLayout>
 

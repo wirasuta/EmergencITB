@@ -2,14 +2,18 @@ package com.wirasuta.karya2sparta;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +28,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
@@ -40,13 +45,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final String CHANNEL_ID = "KaryaSPARTA2";
-
     private static final int PERM_REQ_CODE = 100;
-
-    //TODO:Change geofence area to ITB
-    private static final Double bcLat = -6.892491;
-    private static final Double bcLon = 107.613031;
-    private static final float radius = 50;
+    private static final int PI_REQ_CODE = 100;
+    private static final String SENT = "SMS_SENT";
 
     private SharedPreferences shPref;
     private FusedLocationProviderClient locationProviderClient;
@@ -55,27 +56,27 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback locationRequestCallback;
     private GeofencingClient geofencingClient;
     private ArrayList<Geofence> geofenceList;
-    private PendingIntent geofencePI;
+    private PendingIntent geofencePI,smsSentPI;
+    private BroadcastReceiver smsSentReceiver;
 
-    Switch enableSw;
     TextView textView;
     FloatingActionButton emergencyButton;
-    EditText phoneNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        shPref = getSharedPreferences("prefID", Context.MODE_PRIVATE);
+        checkFirstLaunch();
+
         locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geofencingClient = LocationServices.getGeofencingClient(this);
 
-        shPref = getPreferences(Context.MODE_PRIVATE);
-        enableSw = findViewById(R.id.swGeofence);
         textView = findViewById(R.id.currLocText);
         emergencyButton = findViewById(R.id.sendEmergency);
-        phoneNum = findViewById(R.id.phoneNum);
         geofenceList = new ArrayList<>();
+        smsSentPI = PendingIntent.getBroadcast(this,PI_REQ_CODE,new Intent(SENT),0);
 
         populateGeofenceList();
         createNotificationChannel();
@@ -85,9 +86,23 @@ public class MainActivity extends AppCompatActivity {
             askPermissions();
         } else {
             loadPref();
-            createListener();
             createLocationRequest();
             startLocationService();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getStringExtra("callMethod") == "emergencyNotif"){
+            emergencyButton.performClick();
+        }
+    }
+
+    private void checkFirstLaunch() {
+        if (shPref.getBoolean("firstLaunch",true)){
+            Intent fillUserDetail = new Intent(this,UserDetail.class);
+            startActivity(fillUserDetail);
         }
     }
 
@@ -107,11 +122,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateGeofenceList() {
+        //TODO:Change geofence area to ITB
+        final Double bcLat = -6.8766656;
+        final Double bcLon = 107.6149207;
+        final float radius = 50;
+
         geofenceList.add(new Geofence.Builder()
                 .setRequestId("KaryaSPARTA2")
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setLoiteringDelay(100*60*2)
+                .setLoiteringDelay(100*60*3)
                 .setCircularRegion(bcLat,bcLon,radius)
                 .build());
     }
@@ -120,14 +140,43 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (allowedPermissions()) {
+            loadPref();
             startLocationService();
         }
+        smsSentReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS sent", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic Failure", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No Service", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio Off", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        };
+
+        registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         stopLocationService();
+        unregisterReceiver(smsSentReceiver);
     }
 
     @Override
@@ -144,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CALL_PHONE
         };
 
         ActivityCompat.requestPermissions(this, Permissions, PERM_REQ_CODE);
@@ -153,7 +203,8 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                || ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
             return false;
         else return true;
     }
@@ -201,22 +252,6 @@ public class MainActivity extends AppCompatActivity {
         return geofencePI;
     }
 
-
-    private void createListener() {
-        enableSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    shPref.edit().putBoolean("enableGeofence", true).apply();
-                    loadPref();
-                } else {
-                    shPref.edit().putBoolean("enableGeofence", false).apply();
-                    loadPref();
-                }
-            }
-        });
-    }
-
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -235,9 +270,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadPref() {
-        //TODO:Load settings from shared preferences
         boolean switchState = shPref.getBoolean("enableGeofence", true);
-        enableSw.setChecked(switchState);
         if (switchState) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
@@ -260,14 +293,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendEmergency(View view) {
-        //TODO:Send user info from shared preferences
-        String smsTitle = "INCOMING EMERGENCY LEVEL "+"I";
-        String fullName = "Nama: " + "John Doe";
-        String NIM = "NIM: " + "16517999";
+        String destPhone = shPref.getString("telpdKey","00000000");
+        
+        sendSMS(destPhone);
+        //sendSMS(K3L_ITB);
+        //TODO:Change to K3L Phone Number
+        makeCall(destPhone);
+    }
+
+    private void makeCall(String destPhone) {
+        startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",destPhone,null)));
+    }
+
+    private void sendSMS(String destPhone) {
+        String smsTitle = "INCOMING EMERGENCY";
+        String fullName = "Nama: " + shPref.getString("nameKey","Unknown");
+        String NIM = "NIM: " + shPref.getString("NIMKey","12317000");
+        String userTelp = "No Telpon: " + shPref.getString("telpKey","-");
         String currLocURL = "Maps URL: " + "https://www.google.com/maps/search/?api=1&query=" + String.valueOf(currLoc.getLatitude()) + "," + String.valueOf(currLoc.getLongitude());
-        String smsText = smsTitle + "\n" + fullName + "\n" + NIM + "\n" + currLocURL;
+        String smsText = smsTitle+"\n"+fullName+"\n"+NIM+"\n"+userTelp+"\n"+currLocURL;
 
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNum.getText().toString(),null,smsText,null,null);
+        smsManager.sendTextMessage(destPhone,null,smsText,smsSentPI,null);
+    }
+
+    public void openSettings(View view) {
+        Intent fillUserDetail = new Intent(this,UserDetail.class);
+        startActivity(fillUserDetail);
     }
 }

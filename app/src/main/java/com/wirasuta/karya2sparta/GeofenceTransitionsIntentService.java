@@ -1,6 +1,7 @@
 package com.wirasuta.karya2sparta;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -28,9 +29,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
 
-            // Send notification and log the transition details.
+            // Send notification
             sendNotification();
-            Log.i("GF:", "Geofence Dwell Event Recorded");
         } else {
             // Log the error.
             Log.e("GF:", "Invalid Geofence Event Recorded");
@@ -38,10 +38,15 @@ public class GeofenceTransitionsIntentService extends IntentService {
     }
 
     private void sendNotification() {
+        Intent tapNotifIntent = new Intent(this, MainActivity.class);
+        tapNotifIntent.putExtra("callMethod","emergencyNotif");
+        PendingIntent tapNotifPI = PendingIntent.getActivity(this,300,tapNotifIntent,0);
+
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this,MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Geofencing Notification")
-                .setContentText("Geofence Dwell Event Recorded")
+                .setContentTitle("EmergencITB")
+                .setContentText("Tap untuk mengirimkan sinyal bantuan")
+                .setContentIntent(tapNotifPI)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notifier = NotificationManagerCompat.from(this);
