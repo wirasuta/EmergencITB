@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback locationRequestCallback;
     private GeofencingClient geofencingClient;
     private ArrayList<Geofence> geofenceList;
-    private PendingIntent geofencePI,smsSentPI;
+    private PendingIntent geofencePI, smsSentPI;
     private BroadcastReceiver smsSentReceiver;
 
     TextView textView;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.currLocText);
         emergencyButton = findViewById(R.id.sendEmergency);
         geofenceList = new ArrayList<>();
-        smsSentPI = PendingIntent.getBroadcast(this,PI_REQ_CODE,new Intent(SENT),0);
+        smsSentPI = PendingIntent.getBroadcast(this, PI_REQ_CODE, new Intent(SENT), 0);
 
         populateGeofenceList();
         createNotificationChannel();
@@ -94,14 +94,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getStringExtra("callMethod") == "emergencyNotif"){
+        if (intent.getStringExtra("callMethod") == "emergencyNotif") {
             emergencyButton.performClick();
         }
     }
 
     private void checkFirstLaunch() {
-        if (shPref.getBoolean("firstLaunch",true)){
-            Intent fillUserDetail = new Intent(this,UserDetail.class);
+        if (shPref.getBoolean("firstLaunch", true)) {
+            Intent fillUserDetail = new Intent(this, UserDetail.class);
             startActivity(fillUserDetail);
         }
     }
@@ -127,13 +127,7 @@ public class MainActivity extends AppCompatActivity {
         final Double bcLon = 107.6149207;
         final float radius = 50;
 
-        geofenceList.add(new Geofence.Builder()
-                .setRequestId("KaryaSPARTA2")
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setLoiteringDelay(100*60*3)
-                .setCircularRegion(bcLat,bcLon,radius)
-                .build());
+        geofenceList.add(new Geofence.Builder().setRequestId("KaryaSPARTA2").setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL).setExpirationDuration(Geofence.NEVER_EXPIRE).setLoiteringDelay(100 * 60 * 3).setCircularRegion(bcLat, bcLon, radius).build());
     }
 
     @Override
@@ -143,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             loadPref();
             startLocationService();
         }
-        smsSentReceiver = new BroadcastReceiver(){
+        smsSentReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
@@ -189,22 +183,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void askPermissions() {
-        String[] Permissions = {
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CALL_PHONE
-        };
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE};
 
         ActivityCompat.requestPermissions(this, Permissions, PERM_REQ_CODE);
     }
 
     private boolean allowedPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
             return false;
         else return true;
     }
@@ -242,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PendingIntent getGeofencePendingIntent() {
         // Reuse the PendingIntent if we already have it.
-        if (geofencePI!= null) {
+        if (geofencePI != null) {
             return geofencePI;
         }
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
@@ -275,14 +260,13 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
+            geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     //do nothing
                 }
             });
-        }else{
+        } else {
             geofencingClient.removeGeofences(getGeofencePendingIntent());
         }
     }
@@ -293,8 +277,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendEmergency(View view) {
-        String destPhone = shPref.getString("telpdKey","00000000");
-        
+        String destPhone = shPref.getString("telpdKey", "00000000");
+
         sendSMS(destPhone);
         //sendSMS(K3L_ITB);
         //TODO:Change to K3L Phone Number
@@ -302,7 +286,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeCall(String destPhone) {
-        startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",destPhone,null)));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            askPermissions();
+        }
+        startActivity(new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", destPhone, null)));
     }
 
     private void sendSMS(String destPhone) {
