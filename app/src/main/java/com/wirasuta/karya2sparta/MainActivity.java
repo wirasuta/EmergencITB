@@ -45,9 +45,10 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final String CHANNEL_ID = "KaryaSPARTA2";
+    private static final String SENT = "SMS_SENT";
+    private static final String K3L_ITB = "0222500204";
     private static final int PERM_REQ_CODE = 100;
     private static final int PI_REQ_CODE = 100;
-    private static final String SENT = "SMS_SENT";
 
     private SharedPreferences shPref;
     private FusedLocationProviderClient locationProviderClient;
@@ -89,13 +90,12 @@ public class MainActivity extends AppCompatActivity {
             createLocationRequest();
             startLocationService();
         }
-    }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent.getStringExtra("callMethod") == "emergencyNotif") {
-            emergencyButton.performClick();
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getBoolean("emergencyCall")) {
+                Log.d("INTNT", "Activity called by notification");
+                emergencyButton.callOnClick();
+            }
         }
     }
 
@@ -122,12 +122,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateGeofenceList() {
-        //TODO:Change geofence area to ITB
-        final Double bcLat = -6.8766656;
-        final Double bcLon = 107.6149207;
-        final float radius = 50;
+        //Center point ITB
+        final Double bcLat = -6.890413;
+        final Double bcLon = 107.610391;
+        final float radius = 340;
 
-        geofenceList.add(new Geofence.Builder().setRequestId("KaryaSPARTA2").setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL).setExpirationDuration(Geofence.NEVER_EXPIRE).setLoiteringDelay(100 * 60 * 3).setCircularRegion(bcLat, bcLon, radius).build());
+        geofenceList.add(new Geofence.Builder()
+                .setRequestId("KaryaSPARTA2")
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(100 * 60)
+                .setCircularRegion(bcLat, bcLon, radius)
+                .build());
     }
 
     @Override
@@ -216,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
         // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
         // is already inside that geofence.
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER | GeofencingRequest.INITIAL_TRIGGER_DWELL);
 
         // Add the geofences to be monitored by geofencing service.
         builder.addGeofences(geofenceList);
@@ -260,12 +266,7 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    //do nothing
-                }
-            });
+            geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent());
         } else {
             geofencingClient.removeGeofences(getGeofencePendingIntent());
         }
@@ -280,9 +281,12 @@ public class MainActivity extends AppCompatActivity {
         String destPhone = shPref.getString("telpdKey", "00000000");
 
         sendSMS(destPhone);
-        //sendSMS(K3L_ITB);
-        //TODO:Change to K3L Phone Number
-        makeCall(destPhone);
+        if (shPref.getBoolean("contactK3L",false)==true){
+            sendSMS(K3L_ITB);
+            makeCall(K3L_ITB);
+        } else {
+            makeCall(destPhone);
+        }
     }
 
     private void makeCall(String destPhone) {
@@ -294,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSMS(String destPhone) {
         String smsTitle = "INCOMING EMERGENCY";
-        String fullName = "Nama: " + shPref.getString("nameKey","Unknown");
+        String fullName = "Nama: " + shPref.getString("nameKey","Unknown") + "("+shPref.getString("emailKey","Unknown") + ")" ;
         String NIM = "NIM: " + shPref.getString("NIMKey","12317000");
         String userTelp = "No Telpon: " + shPref.getString("telpKey","-");
         String currLocURL = "Maps URL: " + "https://www.google.com/maps/search/?api=1&query=" + String.valueOf(currLoc.getLatitude()) + "," + String.valueOf(currLoc.getLongitude());

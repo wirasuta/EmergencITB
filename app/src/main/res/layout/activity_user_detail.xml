@@ -1,90 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_screen1"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    android:paddingLeft="35dp"
+    android:paddingRight="35dp"
+    android:paddingTop="20dp"
     tools:context=".UserDetail">
 
+    <ImageView
+        android:layout_width="135dp"
+        android:layout_height="66dp"
+        android:layout_gravity="center"
+        android:src="@drawable/whitelogo"
+        app:srcCompat="@drawable/whitelogo" />
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="18dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/labelID"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Masukkan Identitas Anda"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="24sp" />
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/nameID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Nama"
-            android:inputType="textPersonName" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama" />
 
+            <EditText
+                android:id="@+id/nameID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="                                                        "
+                android:textSize="16sp" />
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/NIMID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="NIM"
-            android:inputType="number" />
-
-        <EditText
-            android:id="@+id/TelpID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="No. Telpon"
-            android:inputType="number" />
-
-        <EditText
-            android:id="@+id/TelpDarID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="No. Telpon Darurat"
-            android:inputType="number" />
-
-        <EditText
-            android:id="@+id/AlamatID"
-            android:layout_width="match_parent"
-            android:layout_height="81dp"
-            android:ems="10"
-            android:hint="Alamat"
-            android:inputType="textPostalAddress" />
-
-        <EditText
-            android:id="@+id/AlamatDarID"
-            android:layout_width="match_parent"
-            android:layout_height="81dp"
-            android:ems="10"
-            android:hint="Alamat Darurat"
-            android:inputType="textPostalAddress" />
-
-        <Switch
-            android:id="@+id/enableSw"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enable Location Based Notification" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onButtonClick"
-            android:text="Simpan" />
-
+        <ImageButton
+            android:layout_width="82dp"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Fakultas/Angkatan" />
+
+            <EditText
+                android:id="@+id/fakultasID"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="                                     "
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NIM" />
+
+            <EditText
+                android:id="@+id/NIMID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="                                     "
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/emailID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:paddingTop="20dp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/TelpID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nomor Handphone"
+        android:paddingTop="20dp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/TelpDarID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nomor Handphone Darurat"
+        android:paddingTop="20dp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/AlamatID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Alamat Terkini"
+        android:paddingTop="20dp"
+        android:textSize="16sp" />
+
+    <Switch
+        android:id="@+id/enableSw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aktifkan Notifikasi Berbasis Lokasi"
+        android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+    <Switch
+        android:id="@+id/enableSw2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hubungi K3L ITB"
+        android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_screen2"
+            android:onClick="onButtonClick"
+            android:text="SIMPAN" />
+    </LinearLayout>
+
+</LinearLayout>

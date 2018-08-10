@@ -19,7 +19,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
-            Log.e("GF:", "Geofence Error");
+            Log.e("GF", "Geofence Error");
             return;
         }
 
@@ -31,15 +31,16 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
             // Send notification
             sendNotification();
+            Log.d("GF","Dwell event recorded");
         } else {
             // Log the error.
-            Log.e("GF:", "Invalid Geofence Event Recorded");
+            Log.e("GF", "Invalid Geofence Event Recorded");
         }
     }
 
     private void sendNotification() {
         Intent tapNotifIntent = new Intent(this, MainActivity.class);
-        tapNotifIntent.putExtra("callMethod","emergencyNotif");
+        tapNotifIntent.putExtra("emergencyCall",true);
         PendingIntent tapNotifPI = PendingIntent.getActivity(this,300,tapNotifIntent,0);
 
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this,MainActivity.CHANNEL_ID)

@@ -18,13 +18,15 @@ public class UserDetail extends AppCompatActivity {
 
     SharedPreferences myPrefs;
 
+    EditText nameEditText;
     EditText NIMEditText;
     EditText phoneEditText; //phone = no.telpon
     EditText dphoneEditText; //dphone = no. darurat
     EditText addrEditText; //Alamat=addr
-    EditText daddrEditText; //Alamat Darurat=daddr
+    EditText fakultasEditText;
+    EditText emailEditText;
     Switch enableSw;
-    EditText nameEditText;
+    Switch enableSw2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,10 @@ public class UserDetail extends AppCompatActivity {
         phoneEditText = (EditText) findViewById(R.id.TelpID);
         dphoneEditText = (EditText) findViewById(R.id.TelpDarID);
         addrEditText = (EditText) findViewById(R.id.AlamatID);
-        daddrEditText = (EditText) findViewById(R.id.AlamatDarID);
+        fakultasEditText = (EditText) findViewById(R.id.fakultasID);
+        emailEditText = findViewById(R.id.emailID);
         enableSw = (Switch) findViewById(R.id.enableSw);
-
+        enableSw2 = (Switch) findViewById(R.id.enableSw2);
         myPrefs = getSharedPreferences("prefID", Context.MODE_PRIVATE);
 
         if (!myPrefs.getBoolean("firstLaunch",true)){
@@ -47,11 +50,13 @@ public class UserDetail extends AppCompatActivity {
             NIMEditText.setText(myPrefs.getString("NIMKey","12317000"));
             phoneEditText.setText(myPrefs.getString("telpKey","02212345678"));
             dphoneEditText.setText(myPrefs.getString("telpdKey","02212345678"));
-            addrEditText.setText(myPrefs.getString("alamatKey","No name"));
-            daddrEditText.setText(myPrefs.getString("alamatdKey","No name"));
+            addrEditText.setText(myPrefs.getString("alamatKey","No Address"));
+            fakultasEditText.setText(myPrefs.getString("fakultasKey","Unknown"));
+            emailEditText.setText(myPrefs.getString("emailKey","Unknown"));
         }
 
         enableSw.setChecked(myPrefs.getBoolean("enableGeofence",true));
+        enableSw2.setChecked(myPrefs.getBoolean("contactK3L",false));
     }
 
     public void onButtonClick(View v){
@@ -64,8 +69,10 @@ public class UserDetail extends AppCompatActivity {
         editor.putString("telpKey", phoneEditText.getText().toString());
         editor.putString("telpdKey", dphoneEditText.getText().toString());
         editor.putString("alamatKey", addrEditText.getText().toString());
-        editor.putString("alamatdKey", daddrEditText.getText().toString());
+        editor.putString("fakultasKey", fakultasEditText.getText().toString());
+        editor.putString("emailKey",emailEditText.getText().toString());
         editor.putBoolean("enableGeofence", enableSw.isChecked());
+        editor.putBoolean("contactK3L", enableSw2.isChecked());
         if (myPrefs.getBoolean("firstLaunch",true)) editor.putBoolean("firstLaunch",false);
         editor.apply();
         Toast.makeText(this,"User Data Saved",Toast.LENGTH_SHORT).show();

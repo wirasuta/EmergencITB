@@ -11,16 +11,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-/-"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
-        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendEmergency" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Location"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sendEmergency"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.22000003" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/sendEmergency"
@@ -29,7 +37,7 @@
         android:clickable="true"
         android:onClick="sendEmergency"
         android:scaleType="center"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/emergencyColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -45,9 +53,23 @@
         android:layout_marginEnd="31dp"
         android:clickable="true"
         android:onClick="openSettings"
-        app:backgroundTint="?attr/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_preferences" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Emergency"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/sendEmergency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65999997" />
 
 </android.support.constraint.ConstraintLayout>
